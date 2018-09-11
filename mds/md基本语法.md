@@ -42,7 +42,7 @@ console.log(sum(num1, num2));
 语法：
 ```
 (```javascript)
-code...这里去掉括号
+code...这里去掉括号
 (```)
 ```
 
@@ -52,7 +52,7 @@ code...这里去掉括号
 [百度一下](http://www.baidu.com "百度一下")
 ```
 [链接名称](链接地址 "图片title")
-<a href="链接地址" target="_blank">链接名称</a>
+<a href="链接地址" target="_blank">链接名称</a>
 ```
 
 ----------
