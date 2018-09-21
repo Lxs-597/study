@@ -9,6 +9,8 @@ const router = new Router({
   // prefix: 'prefix'
 })
 
+let pageRouter = new Router()
+
 const readPage = page => {
   return new Promise((resolve, reject) => {
     let pagePath = path.resolve(__dirname, `page/${page}.html`)
@@ -22,17 +24,19 @@ const readPage = page => {
   })
 }
 
-router.get('/', async (ctx, next) => {
-  const page = await readPage('index')
-  ctx.type = 'html'
-  ctx.body = page
-})
+pageRouter
+  .get('/index', async ctx => {
+    const page = await readPage('index')
+    ctx.type = 'html'
+    ctx.body = page
+  })
+  .get('/todo', async ctx => {
+    ctx.body = 'todo'
+  })
 
-router.post('/post_userinfo', (ctx, next) => {
-  const data = ctx.request.body
+router.use('/page', pageRouter.routes(), pageRouter.allowedMethods())
 
-  ctx.body = data
-})
+app.use(router.routes()).use(router.allowedMethods())
 
 app.use(bodyParser())
 
@@ -49,12 +53,11 @@ app.use(async (ctx, next) => {
   ctx.set('X-Response-Time', `${ms}ms`)
 })
 
-app.use(router.routes()).use(router.allowedMethods())
 
 app.on('error',  (err, ctx) => {
   console.error('sever error:', err, ctx)
 })
 
 app.listen(9001, () => {
-  console.log('%c sever is starting at port 9001', 'color: green')
+  console.log('sever is starting at port 9001')
 })
