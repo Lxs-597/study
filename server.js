@@ -1,21 +1,31 @@
 const Koa = require('koa')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
+const path = require('path')
+const fs = require('fs')
 
 const app = new Koa()
-const router = new Router()
+const router = new Router({
+  // prefix: 'prefix'
+})
 
-router.get('/', (ctx, next) => {
-  console.log(ctx.query)
-  ctx.body = `
-    <form method="POST" action="/post_userinfo">
-      <label>用户名</label>
-      <input type="text" name="username"/>
-      <label>年龄</label>
-      <input type="number" name="age"/>
-      <button type="submit">提交</button>
-    </form>
-  `
+const readPage = page => {
+  return new Promise((resolve, reject) => {
+    let pagePath = path.resolve(__dirname, `page/${page}.html`)
+    fs.readFile(pagePath, (err, data) => {
+      if (!err) {
+        resolve(data.toString())
+      } else {
+        reject(err)
+      }
+    })
+  })
+}
+
+router.get('/', async (ctx, next) => {
+  const page = await readPage('index')
+  ctx.type = 'html'
+  ctx.body = page
 })
 
 router.post('/post_userinfo', (ctx, next) => {
