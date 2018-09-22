@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 
 module.exports = {
@@ -21,10 +22,21 @@ module.exports = {
   },
   module: {
     rules: [
-
+      {
+        test: /\.(sc|sa|c)ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {loader: 'css-loader'},
+          {loader: 'sass-loader'}
+        ]
+      }
     ]
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css'
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(['./build']),
     new HtmlWebpackPlugin({

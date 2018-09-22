@@ -1,3 +1,4 @@
+import './index.scss'
 console.log('hello webpack')
 document.getElementById('app')
   .textContent = 'aaabbbcccddd'
