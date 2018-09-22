@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-
+// copy-webpack-plugin
 
 module.exports = {
   entry: {
@@ -27,6 +27,7 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {loader: 'css-loader'},
+          {loader: 'postcss-loader'},
           {loader: 'sass-loader'}
         ]
       }
