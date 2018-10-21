@@ -83,3 +83,49 @@
 ```
 
 **`Symbol` 不能转换为数字或者字符串，也不能与逻辑运算符以外的数学操作符一起使用， `Symbol` 可以转换为 `boolean` 值，因为它属于非空值类型。**
+
+- 对象的Symbol属性枚举
+
+**`Object.keys()` 返回对象的所有可枚举属性， `Object.getOwnPropertyNames()` 不考虑对象属性的可枚举性，返回对象所有属性，ES6新增的 `Object.getOwnPropertySymbols()` 方法检索对象的 `Symbol` 属性。**
+
+```js
+  let name = Symbol.for('name')
+  let age = Symbol.for('age')
+
+  let person = {
+    [name]: 'name',
+    [age]: '18'
+  }
+
+  console.log(Object.getOwnPropertySymbols(person))  // [ Symbol(name), Symbol(age) ]
+```
+
+- Symbol暴露的内部操作
+**`Symbol.hasInstance`用于确定对象是否为函数的实例，相当于 `instanceof`**
+
+```js
+  let obj = {}
+
+  console.log(Array[Symbol.hasInstance](obj))  // false
+  console.log(obj instanceof Array)
+```
+
+**可以通过修改对象的 `Symbol.hasInstance` 属性改变 `instanceof` 操作符运行方式**
+
+```js
+  function Person(name) {
+    this.name = name
+  }
+
+  let person = new Person('zak')
+
+  console.log(person instanceof Person)  // true
+
+  Object.defineProperty(Person, Symbol.hasInstance, {
+    value: v => {
+      return false  // 返回false或者进行自定义修改instanceof操作符运行方式
+    }
+  })
+
+  console.log(person instanceof Person)  // false
+```
