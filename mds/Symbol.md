@@ -129,3 +129,62 @@
 
   console.log(person instanceof Person)  // false
 ```
+
+**`Symbol.isConcatSpreadable` 表示当一个对象有数值键和length属性时，它的数值型属性值将被独立添加到 `concat()` 调用的结果中**
+
+```js
+  let obj = {
+    0: 'zak',
+    1: 'vi',
+    length: 2,
+  }
+
+  console.log([].concat(obj))  // [ { '0': 'zak', '1': 'vi', length: 2 } ]
+```
+
+```js
+  let obj = {
+    0: 'zak',
+    1: 'vi',
+    length: 2,
+    [Symbol.isConcatSpreadable]: true
+  }
+
+  console.log([].concat(obj))  // [ 'zak', 'vi' ]
+```
+
+**`Symbol.search`、`Symbol.match`、`Symbol.split`、`Symbol.replace`**
+
+```js
+  let str = 'message'
+
+  let customSearch = {
+    [Symbol.search]: value => {
+      return `hello ${value}`
+    },
+    [Symbol.match]: value => {
+      return `hello ${value}`
+    },
+    [Symbol.split]: value => {
+      return value.split('')
+    },
+    [Symbol.replace]: (value, replacement) => {
+      return value.replace(value, replacement)
+    },
+  }
+
+  console.log(str.replace(customSearch, 'aaa'))
+```
+
+**`Symbol.toStringTag` 用于改变 `Object.prototype,toString.call()` 方法的返回值**
+
+```js
+  function Person() {}
+
+  Person.prototype[Symbol.toStringTag] = 'Person'
+
+  let person = new Person()
+
+  console.log(person.toString())  // [object Person]
+  console.log(Object.prototype.toString.call(person))  // [object Person]
+```
