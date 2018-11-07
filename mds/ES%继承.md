@@ -43,10 +43,14 @@
   }
 
   class Child extends Parent {
-    constructor(name) {
-      // 调用super()方法继承父类属性及方法
-      super()
-    }
+     constructor(name) {
+        // 调用super()方法继承父类属性及方法
+        // 在子类中使用constructor构造函数必须调用super()方法，否则会抛出错误，如果不使用constructor，默认会调用super并传入所有参数，相当于调用
+        // constructor(...args) {
+        //   super(...args)
+        // }
+        super(name)
+      }
   }
 
   let child = new Child('child')
