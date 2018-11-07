@@ -79,3 +79,40 @@
 
   person.sayName()
 ```
+
+- ES6中的类也是一等公民
+> 一等公民是指一个可以传入函数、可以从函数返回，并且可以赋值给变量的值。
+
+```js
+  // 将类作为参数传入函数
+  function createClass(classDef) {
+    return new classDef()
+  }
+
+  let instance = createClass(class {
+    sayHi() {
+      console.log('hi')
+    }
+  })
+
+  instance.sayHi()  // 'hi'
+```
+
+- 通过立即调用类表达式创建单例
+
+```js
+  // 可直接调用匿名类表达式省略Person
+  let person = new class Person {
+    constructor(name) {
+      this.name = name
+    }
+
+    sayName() {
+      console.log(this.name)
+    }
+  }('Jhon')
+
+  person.sayName()  // 'Jhon'
+```
+
+
