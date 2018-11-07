@@ -204,3 +204,27 @@
 
   Person.sayHi()  // 'hi'
 ```
+
+- 类的继承
+```js
+  class Parent {
+    constructor(name) {
+      this.name = name
+    }
+
+    sayName() {
+      console.log(this.name)
+    }
+  }
+
+  class Child extends Parent {
+    constructor(name) {
+      // 调用super()方法继承父类属性及方法
+      super()
+    }
+  }
+
+  let child = new Child('child')
+
+  child.sayName()  // 'child'
+```
