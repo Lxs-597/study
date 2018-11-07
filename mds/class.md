@@ -115,4 +115,92 @@
   person.sayName()  // 'Jhon'
 ```
 
+- 类中的getter和setter
+```js
+  class CustomClass {
+    constructor() {
+      this.num = 1
+    }
 
+    get count() {
+      return this.num
+    }
+
+    set count(value) {
+      this.num = value
+    }
+  }
+
+  let instance = new CustomClass()
+
+  console.log(instance.count)  // 1
+
+  instance.count = 10
+
+  console.log(instance.count)  // 10
+```
+使用ES5的实现
+```js
+  let CustomClass = (function() {
+    const CustomClass = function() {
+      if (typeof new.target === 'undefined') {
+        // 判断是否通过new关键字调用
+        throw new Error('必须使用new关键字调用构造函数')
+      }
+
+      this.num = 1
+    }
+
+    Object.defineProperty(CustomClass.prototype, 'count', {
+      get() {
+        return this.num
+      },
+      set(value) {
+        this.num = value
+      }
+    })
+
+    return CustomClass
+  })()
+
+  let instance = new CustomClass()
+  instance.count = 10
+
+  console.log(instance.count)
+```
+
+- 类中的计算属性
+```js
+  let methodName = 'sayName'
+  let propertyName = 'name'
+  class Person {
+    constructor(name) {
+      this.fullName = name
+    }
+
+    [methodName]() {
+      console.log(this.fullName)
+    }
+
+    get [propertyName]() {
+      return this.fullName
+    }
+
+    set [propertyName](newName) {
+      this.fullName = newName
+    }
+  }
+```
+
+- 类的静态方法
+
+```js
+  class Person {
+    // 通过static关键字标识的方法会作为类的静态方法，只能由类本身调用，不会出现在实例的原型链中
+    static sayHi() {
+      console.log('hi')
+    }
+  }
+
+  Person.sayHi()  // 'hi'
+```
