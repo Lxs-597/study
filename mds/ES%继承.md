@@ -1,4 +1,31 @@
-- 原型继承
+### 继承
+
+- 构造函数继承
+```js
+  function Parent(name) {
+    this.name = name
+
+    this.sayName = function() {
+      console.log(this.name)
+    }
+  }
+
+  function Child(name) {
+    Parent.call(this, name)
+  }
+
+  let parent = new Parent('parent')
+  let child = new Child('child')
+
+  parent.sayName()  // parent
+  child.sayName()  // child
+
+  console.log(parent.sayName === child.sayName)  // false 没有实现方法的公用
+  console.log(child instanceof Child)  // true
+  console.log(child instanceof Parent)  // false 原型指向不正确
+```
+
+- 混合继承
 ```js
   function Parent(name) {
     this.name = name
