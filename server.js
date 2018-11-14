@@ -1,12 +1,21 @@
 const Koa = require('koa')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
+const render =  require('koa-ejs')
 const path = require('path')
 const fs = require('fs')
 
 const app = new Koa()
 const router = new Router({
   // prefix: 'prefix'
+})
+
+render(app, {
+  root: path.join(__dirname, 'page'),
+  layout: 'layout',
+  viewExt: 'html',
+  cache: false,
+  debug: false
 })
 
 let pageRouter = new Router()
@@ -32,6 +41,13 @@ pageRouter
   })
   .get('/todo', async ctx => {
     ctx.body = 'todo'
+  })
+
+router
+  .get('/', async ctx => {
+    await ctx.render('index', {
+      title: 'hello koa2'
+    })
   })
 
 router.use('/page', pageRouter.routes(), pageRouter.allowedMethods())

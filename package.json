@@ -1,10 +1,11 @@
 {
-  "name": "Koa2",
+  "name": "Koa22",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,10 @@
   "dependencies": {
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
+    "koa-ejs": "^4.1.2",
     "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
   }
 }
