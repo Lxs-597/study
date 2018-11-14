@@ -43,10 +43,13 @@ pageRouter
     ctx.body = 'todo'
   })
 
+const data = ['aaa', 'bbb', 'ccc']
+
 router
   .get('/', async ctx => {
     await ctx.render('index', {
-      title: 'hello koa2'
+      title: 'hello koa2',
+      list: data
     })
   })
 
