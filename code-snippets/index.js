@@ -84,11 +84,9 @@ function looseSome(val, arr) {
 }
 
 function toString(val) {
-  return val == null
-    ? ''
-    : typeof val === 'object'
-      ? JSON.stringify(val)
-      : String(val)
+  return val == null ? '' : typeof val === 'object'
+    ? JSON.stringify(val)
+    : String(val)
 }
 
 function toNumber(val) {
@@ -97,3 +95,33 @@ function toNumber(val) {
   return isNaN(num) ? val : num
 }
 
+function throttle(handler, threshold = 1000) {
+  let last = null, timer = null
+
+  return function(...args) {
+    let now = +new Date()
+    if (now - last > threshold) {
+      handler.apply(this, args)
+      last = now
+    } else {
+      clearTimeout(timer)
+
+      timer = setTimeout(() => {
+        handler.apply(this, args)
+        last = now
+      }, threshold)
+    }
+  }
+}
+
+function debounce(handler, delay = 200) {
+  let timer = null
+
+  return function(...args) {
+    clearTimeout(timer)
+
+    timer = setTimeout(() => {
+      handler.apply(this, args)
+    }, delay)
+  }
+}
