@@ -125,3 +125,16 @@ function debounce(handler, delay = 200) {
     }, delay)
   }
 }
+
+function getURLParam(key) {
+  key = key.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]')
+
+  let reg = new RegExp(`[\\?&]${key}=([^&#]*)`)
+
+  let result = reg.exec(location.search)
+
+  return result == null ? '' : result[1]
+
+  // let searchParams = new URLSearchParams(location.search)
+  // return searchParams.get(key)
+}
