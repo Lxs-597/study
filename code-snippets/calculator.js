@@ -11,6 +11,8 @@ const getDecimalLength = num => {
   return interception ? interception.length : 0
 }
 
+const convertDecimal = decimal => +decimal.toString().replace('.', '').replace(/^0+/, '')
+
 const createCalculator = () => {
   class Calculation {
     static validateParameters(params) {
@@ -23,6 +25,11 @@ const createCalculator = () => {
 
     addition(...args) {
       Calculation.validateParameters(args)
+
+      const power = 10 ** Math.max(...args.map(getDecimalLength))
+      const result = args.reduce((init, arg) => init + this.multiply(arg, power), 0)
+
+      return result / power
     }
 
     multiply(...args) {
@@ -34,10 +41,8 @@ const createCalculator = () => {
       let product = 1
 
       for (let i = 0; i < args.length; i++) {
-        const temp = args[i].toString()
-
         power += getDecimalLength(args[i])
-        product *= Number(temp.replace('.', ''))
+        product *= convertDecimal(args[i])
       }
 
       return product / 10 ** power
@@ -49,8 +54,8 @@ const createCalculator = () => {
 
 const caculator = createCalculator()
 
-let result = caculator.multiply(2.01, 100, '1.1')
+let result = caculator.addition(0.1, 0.2)
+let result1 = caculator.multiply(0.1, 0.2)
 
 console.log(result)
-console.log(2.01 * 100)
-
+console.log(result1)
