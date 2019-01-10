@@ -32,6 +32,10 @@ const createCalculator = () => {
       return result / power
     }
 
+    subtraction(reduction, minuend) {
+      Calculation.validateParameters([reduction, minuend])
+    }
+
     multiply(...args) {
       Calculation.validateParameters(args)
 
@@ -47,6 +51,16 @@ const createCalculator = () => {
 
       return product / 10 ** power
     }
+
+    division(divisor, dividend) {
+      Calculation.validateParameters([divisor, dividend])
+
+      if (toNumber(dividend) === 0) throw new Error('被除数不能为0')
+
+      const power = 10 ** (getDecimalLength(dividend) - getDecimalLength(divisor))
+
+      return convertDecimal(divisor) / convertDecimal(dividend) * power
+    }
   }
 
   return new Calculation()
@@ -56,6 +70,8 @@ const caculator = createCalculator()
 
 let result = caculator.addition(0.1, 0.2)
 let result1 = caculator.multiply(0.1, 0.2)
+let result2 = caculator.division(0.05, 0.0)
 
 console.log(result)
 console.log(result1)
+console.log(result2)
