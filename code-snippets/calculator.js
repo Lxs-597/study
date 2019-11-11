@@ -73,15 +73,15 @@ const createCalculator = () => {
 
 const caculator = createCalculator()
 
-let result = caculator.addition(0.1, 0.2)
-let result1 = caculator.multiply(0.1, 0.2)
+let result = caculator.addition(0.001, 0.002)
+let result1 = caculator.multiply(0.1, 0.2, 0.3)
 let result2 = caculator.division(0.69, 10)
 let result3 = caculator.subtraction(100.1, 10.01)
 
 console.log(result)
 console.log(0.1 + 0.2)
 console.log(result1)
-console.log(0.1 * 0.2)
+console.log(0.1 * 0.2 * 0.3)
 console.log(result2)
 console.log(0.69 / 10)
 console.log(result3)
