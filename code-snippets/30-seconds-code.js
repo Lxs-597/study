@@ -178,3 +178,40 @@ const zipObject = (props, values) =>
 
 zipObject(['a', 'b', 'c'], [1, 2])
 
+
+const omit = (obj, keys) =>
+  Object.keys(obj)
+    .filter(k => !keys.includes(k))
+    .reduce((acc, key) => (acc[key] = obj[key], acc), {})
+
+const omitBy = (obj, fn) =>
+  Object.keys(obj)
+    .filter(k => !fn(obj[k], k))
+    .reduce((acc, key) => (acc[key] = obj[key], acc), {})
+
+const pickBy = (obj, fn) =>
+  Object.keys(obj)
+    .filter(k => fn(obj[k], k))
+    .reduce((acc, key) => (acc[key] = obj[key], acc), {})
+
+omit({ a: 1, b: '2', c: 3 }, ['b'])
+omitBy({ a: 1, b: '2', c: 3 }, x => typeof x === 'number')
+pickBy({ a: 1, b: '2', c: 3 }, x => typeof x === 'number')
+
+
+const stripHTMLTags = str => str.replace(/<[^>]*>/g, '')
+
+
+const CSVToJSON = (data, delimiter = ',') => {
+  const titles = data.slice(0, data.indexOf('\n')).split(delimiter)
+
+  return data
+    .slice(data.indexOf('\n') + 1)
+    .split('\n')
+    .map(v => {
+      const values = v.split(delimiter)
+      return titles.reduce((obj, title, index) => ((obj[title] = values[index]), obj), {})
+    })
+}
+
+CSVToJSON('col1,col2\na,b\nc,d')
