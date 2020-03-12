@@ -133,6 +133,11 @@ const countOccurrences = (arr, val) => arr.reduce((a, v) => v === val ? a + 1 : 
 countOccurrences([1, 2, 3, 1, 1], 1)
 
 
+const flattenObject = (obj, prefix = '') =>
+  Object.keys(obj).reduce((acc, k) => {
+
+  }, {})
+
 const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v))
 
 deepFlatten([[1, [2, 3]], [4]])
@@ -214,4 +219,199 @@ const CSVToJSON = (data, delimiter = ',') => {
     })
 }
 
+const CSVToArray = (data, delimiter = ',', omitFirstRow = false) =>
+  data
+    .slice(omitFirstRow ? data.indexOf('\n') + 1 : 0)
+    .split('\n')
+    .map(v => v.split(delimiter))
+
 CSVToJSON('col1,col2\na,b\nc,d')
+
+
+const chainAsync = fns => {
+  let curr = 0
+  const last = fns[fns.length - 1]
+
+  const next = () => {
+    const fn = fns[curr++]
+    fn === last ? fn() : fn(next)
+  }
+
+  next()
+}
+
+chainAsync([
+  next => {
+    console.log('0 seconds');
+    setTimeout(next, 1000);
+  },
+  next => {
+    console.log('1 second');
+    setTimeout(next, 1000);
+  },
+  () => {
+    console.log('2 second');
+  }
+])
+
+
+const copyToClipboard = str => {
+  const el = document.createElement('textarea')
+  el.value = str
+  el.setAttribute('readonly', '')
+  el.style.position = 'absolute'
+  el.style.left = '-9999px'
+  document.body.appendChild(el)
+  const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+  el.select()
+  document.execCommand('copy')
+  document.body.removeChild(el)
+  if (selected) {
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(selected);
+  }
+}
+
+
+const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
+  const { top, right, bottom, left } = el.getBoundingClientRect()
+  const { innerWidth, innerHeight } = window
+
+  return partiallyVisible
+    ? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) &&
+      ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+    : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
+}
+
+
+const createEventHub = () => ({
+  hub: Object.create(null),
+  emit(event, data) {
+    (this.hub[event] || []).forEach(h => h(data))
+  },
+  on(event, handler) {
+    if (!this.hub[event]) this.hub[event] = []
+    this.hub[event].push(handler)
+  },
+  off(event, handler) {
+    const i = (this.hub[event] || []).findIndex(h => h === handler)
+    if (i > -1) this.hub[event].splice(i, 1)
+    if (this.hub[event].length === 0) Reflect.deleteProperty(this.hub, event)
+  }
+})
+
+const handler = data => console.log(data)
+const eventHub = createEventHub()
+
+eventHub.on('message', handler)
+eventHub.emit('message', 'hello world')
+eventHub.emit('message', { hello: 'world' })
+eventHub.off('message', handler)
+
+
+const triggerEvent = (el, type, detail) =>
+  el.dispatchEvent(new CustomEvent(type, { detail }))
+
+const on = (el, evt, fn, opts) => {
+  const delegatorFn = e => e.target.matches(opts.target) && fn.call(e.target, e)
+  el.addEventListener(evt, opts.target ? delegatorFn : fn, opts.options || false)
+  if (opts.target) return delegatorFn
+}
+
+const off = (el, evt, fn, opts = false) => el.removeEventListener(evt, fn, opts)
+
+
+const prefix = prop => {
+  const capitalize = prop.charAt(0).toUpperCase + prop.slice(1)
+  const prefixes = ['', 'webkit', 'moz', 'ms', 'o']
+  const i = prefixes.findIndex(
+    prefix => typeof document.body.style[prefix ? prefix + capitalize : prop] !== 'undefined'
+  )
+  return i !== -1 ? i === 0 ? prop : prefixes[i] + capitalize : null
+}
+
+
+const xProd = (a, b) => a.reduce((acc, x) => acc.concat(b.map(y => [x, y])), [])
+
+
+const deepFreeze = obj =>
+  Object.keys(obj).forEach(prop =>
+    !(obj[prop] instanceof Object) || Object.isFrozen(obj[prop]) ? null : Object.freeze(obj[prop])
+  ) || Object.freeze(obj)
+
+
+const getRealLength = str =>
+  typeof str === 'string' && str.length > 0
+    ? [...str].reduce((len, s) => (len += (s.charCodeAt(0) > 120 ? 2 : 1), len), 0)
+    : 0
+
+const sliceRealLength = (str, len) => {
+  let i = 0
+  let ret = ''
+  while(len > 0) {
+    const s = str.slice(i, ++i)
+    const realLength = s.charCodeAt(0) > 120 ? 2 : 1
+    ret += s
+    len -= realLength
+  }
+  return ret
+}
+
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+
+const converge = (converger, fns) => (...args) => converger(
+  ...fns.map(fn => fn.apply(null, args))
+)
+
+const average = converge((a, b) => a / b, [
+  arr => arr.reduce((a, v) => a + v, 0),
+  arr => arr.length
+])
+
+average([1, 2, 3, 4, 5, 6, 7])
+
+
+const factoria = n =>
+  n <= 1
+    ? 1
+    : n * factoria(n - 1)
+
+console.log(factoria(10))
+
+
+const once = fn => {
+  let called = false
+  return function(...args) {
+    if (called) return
+    called = true
+    return fn.apply(this, args)
+  }
+}
+
+
+const curry = (fn, arity = fn.length, ...args) =>
+  arity >= fn.length ? fn(...args) : curry.bind(null, fn, arity, ...args)
+
+
+const shuffle = ([...arr]) => {
+  let m = arr.length
+  while(m) {
+    const i = Math.floor(Math.random() * m--)
+    ;[arr[m], arr[i]] = [arr[i], arr[m]]
+  }
+  return arr
+}
+
+const foo = [1, 2, 34, 4, 5, 6, 7, 9, 13, 12, 11, 10]
+console.log(shuffle(foo))
+
+
+const debounce = (fn, ms = 0) => {
+  let timeout
+  return function(...args) {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => fn.apply(this, args), ms)
+  }
+}
